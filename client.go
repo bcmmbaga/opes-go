@@ -39,13 +39,12 @@ func (s *Service) Send(msgs ...Message) (smsResponse *SMSResponse) {
 	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", s.auth.token))
 	req.Header.Set("Content-Type", "application/json")
 
-	
 	resp, _ := http.DefaultClient.Do(req)
 	defer resp.Body.Close()
 
-	if err := json.NewDecoder(resp.Body).Decode(smsResponse); err != {
-		return 
+	if err := json.NewDecoder(resp.Body).Decode(smsResponse); err != nil {
+		return
 	}
 
-	return 
+	return
 }
