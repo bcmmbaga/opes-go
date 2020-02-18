@@ -17,7 +17,7 @@ var tokenEndpoint = "https://sms.opestechnologies.co.tz/api/get-api-key"
 
 func generateToken(username, password string) (auth *auth) {
 	req := &request{
-		username: username,
+		Name:     username,
 		Password: password,
 	}
 
