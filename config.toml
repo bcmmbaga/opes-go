@@ -1,0 +1,3 @@
+[Endpoints]
+    SMS = "https://sms.opestechnologies.co.tz/api/messages/send"
+    Token = "https://sms.opestechnologies.co.tz/api/get-api-key"
