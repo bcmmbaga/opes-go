@@ -10,7 +10,7 @@ import (
 )
 
 type config struct {
-	Username string `json:"username"`
+	Username string `json:"name"`
 	Password string `json:"password"`
 }
 
