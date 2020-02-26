@@ -4,25 +4,10 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"log"
 	"net/http"
 	"os"
 	"time"
-
-	"github.com/spf13/viper"
 )
-
-func init() {
-	viper.AddConfigPath(".")
-	viper.SetConfigName("config")
-	viper.Set("USERNAME", os.Getenv("OPES_USERNAME"))
-	viper.Set("PASSWORD", os.Getenv("OPES_PASSWORD"))
-
-	if err := viper.ReadInConfig(); err != nil {
-		log.Fatalf("%s", err)
-	}
-
-}
 
 type config struct {
 	Username string `json:"username"`
@@ -37,13 +22,14 @@ type auth struct {
 // generateToken request authorization token by sending a sync request
 // with username and password from https://sms.opestechnologies.co.tz/api/get-api-key
 func generateToken() (auth *auth) {
+	url := "https://sms.opestechnologies.co.tz/api/get-api-key"
 	req := &config{
-		Username: viper.GetString("USERNAME"),
-		Password: viper.GetString("PASSWORD"),
+		Username: os.Getenv("OPES_USERNAME"),
+		Password: os.Getenv("OPES_PASSWORD"),
 	}
 
 	content, _ := json.Marshal(req)
-	resp, err := http.DefaultClient.Post(viper.GetString("Endpoints.Token"), "application/json", bytes.NewBuffer(content))
+	resp, err := http.DefaultClient.Post(url, "application/json", bytes.NewBuffer(content))
 	if err != nil {
 		return
 	}
