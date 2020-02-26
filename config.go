@@ -21,7 +21,7 @@ type auth struct {
 
 // generateToken request authorization token by sending a sync request
 // with username and password from https://sms.opestechnologies.co.tz/api/get-api-key
-func generateToken() (auth *auth) {
+func generateToken(c *http.Client) (auth *auth) {
 	url := "https://sms.opestechnologies.co.tz/api/get-api-key"
 	req := &config{
 		Username: os.Getenv("OPES_USERNAME"),
@@ -29,7 +29,7 @@ func generateToken() (auth *auth) {
 	}
 
 	content, _ := json.Marshal(req)
-	resp, err := http.DefaultClient.Post(url, "application/json", bytes.NewBuffer(content))
+	resp, err := c.Post(url, "application/json", bytes.NewBuffer(content))
 	if err != nil {
 		return
 	}
@@ -51,7 +51,7 @@ func generateToken() (auth *auth) {
 }
 
 func (s *Service) refreshToken() error {
-	auth := generateToken()
+	auth := generateToken(s.Client)
 	if auth == nil {
 		return errors.New("failed to refresh token")
 	}
