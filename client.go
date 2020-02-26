@@ -1,14 +1,29 @@
 package opes
 
+import (
+	"crypto/tls"
+	"net/http"
+)
+
 // Service domain implementation for opes SMS API.
 type Service struct {
-	Auth *auth
+	Auth   *auth
+	Client *http.Client
 }
 
 // NewSMSService ...
 func NewSMSService() *Service {
+	c := &http.Client{
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{
+				InsecureSkipVerify: true,
+			},
+		},
+	}
+
 	return &Service{
-		Auth: generateToken(),
+		Auth:   generateToken(c),
+		Client: c,
 	}
 }
 
