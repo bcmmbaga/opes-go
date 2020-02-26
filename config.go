@@ -70,7 +70,7 @@ func (s *Service) refreshToken() error {
 		return errors.New("failed to refresh token")
 	}
 
-	s.auth = auth
+	s.Auth = auth
 	return nil
 }
 

@@ -2,13 +2,13 @@ package opes
 
 // Service domain implementation for opes SMS API.
 type Service struct {
-	auth *auth
+	Auth *auth
 }
 
 // NewSMSService ...
 func NewSMSService() *Service {
 	return &Service{
-		auth: generateToken(),
+		Auth: generateToken(),
 	}
 }
 
