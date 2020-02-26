@@ -22,7 +22,8 @@ type auth struct {
 
 // generateToken request authorization token by sending a sync request
 // with username and password from https://sms.opestechnologies.co.tz/api/get-api-key
-func generateToken(c *http.Client) (auth *auth) {
+func generateToken(c *http.Client) *auth {
+	auth := &auth{}
 	url := "https://sms.opestechnologies.co.tz/api/get-api-key"
 	req := &config{
 		Username: os.Getenv("OPES_USERNAME"),
@@ -32,24 +33,24 @@ func generateToken(c *http.Client) (auth *auth) {
 	content, _ := json.Marshal(req)
 	resp, err := c.Post(url, "application/json", bytes.NewBuffer(content))
 	if err != nil {
-		return
+		return auth
 	}
 	defer resp.Body.Close()
 
 	tokenResp := &response{}
 	if err := json.NewDecoder(resp.Body).Decode(tokenResp); err != nil {
-		return
+		return auth
 	}
 
 	if tokenResp.Error != "" {
-		return
+		return auth
 	}
 
 	fmt.Println(tokenResp)
 	auth.token = tokenResp.Success.Token
 	// expires after 15 days starting from day token was generated.
 	auth.expire = time.Now().Add(time.Hour * 24 * 15)
-	return
+	return auth
 }
 
 func (s *Service) refreshToken() error {
