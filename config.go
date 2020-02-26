@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"net/http"
 	"os"
 	"time"
@@ -33,20 +32,19 @@ func generateToken(c *http.Client) *auth {
 	content, _ := json.Marshal(req)
 	resp, err := c.Post(url, "application/json", bytes.NewBuffer(content))
 	if err != nil {
-		return auth
+		return nil
 	}
 	defer resp.Body.Close()
 
 	tokenResp := &response{}
 	if err := json.NewDecoder(resp.Body).Decode(tokenResp); err != nil {
-		return auth
+		return nil
 	}
 
 	if tokenResp.Error != "" {
-		return auth
+		return nil
 	}
 
-	fmt.Println(tokenResp)
 	auth.token = tokenResp.Success.Token
 	// expires after 15 days starting from day token was generated.
 	auth.expire = time.Now().Add(time.Hour * 24 * 15)
