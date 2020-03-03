@@ -24,7 +24,6 @@ func init() {
 
 	path = filepath.Join(path, ".config/opes")
 	configPath = path
-
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		err := os.MkdirAll(path, 0700)
 		if err != nil {
