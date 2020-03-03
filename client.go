@@ -66,7 +66,7 @@ func NewSMSService() *Service {
 }
 
 // Send message
-func (s Service) Send(msgs ...Message) *SMSResponse {
+func (s Service) Send(msgs ...Message) *SMSResponses {
 	url := "https://sms.opestechnologies.co.tz/api/messages/send"
 	if ok := s.Auth.isvalid(); !ok {
 		if err := s.refreshToken(); err != nil {
@@ -89,11 +89,11 @@ func (s Service) Send(msgs ...Message) *SMSResponse {
 	}
 	defer resp.Body.Close()
 
-	smsResponse := &SMSResponse{}
-	if err := json.NewDecoder(resp.Body).Decode(smsResponse); err != nil {
+	smsResponses := &SMSResponses{}
+	if err := json.NewDecoder(resp.Body).Decode(smsResponses); err != nil {
 		return nil
 	}
 
-	fmt.Println(smsResponse)
-	return smsResponse
+	fmt.Println(smsResponses)
+	return smsResponses
 }

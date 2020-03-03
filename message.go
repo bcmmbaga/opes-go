@@ -13,8 +13,8 @@ type smsRequest struct {
 	Messages []Message `json:"messages"`
 }
 
-// SMSResponse response
-type SMSResponse struct {
+// SMSResponses response
+type SMSResponses []struct {
 	ResultCode int    `json:"result_code"`
 	Result     string `json:"result"`
 	Reference  string `json:"reference"`
