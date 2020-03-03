@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/spf13/viper"
 )
 
 type config struct {
@@ -48,6 +50,12 @@ func generateToken(c *http.Client) *auth {
 	auth.token = tokenResp.Success.Token
 	// expires after 15 days starting from day token was generated.
 	auth.expire = time.Now().Add(time.Hour * 24 * 15)
+
+	// store the token in config file
+	viper.Set("AUTH.Token", auth.token)
+	viper.Set("AUTH.Expires", auth.expire)
+	viper.WriteConfigAs(configPath)
+
 	return auth
 }
 
