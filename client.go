@@ -67,7 +67,7 @@ func NewSMSService() *Service {
 }
 
 // Send message
-func (s Service) Send(msgs ...Message) *SMSResponses {
+func (s Service) Send(msgs ...Message) SMSResponses {
 	url := "https://sms.opestechnologies.co.tz/api/messages/send"
 	if ok := s.Auth.isvalid(); !ok {
 		if err := s.refreshToken(); err != nil {
@@ -91,8 +91,8 @@ func (s Service) Send(msgs ...Message) *SMSResponses {
 	defer resp.Body.Close()
 
 	jsonContent, _ := ioutil.ReadAll(resp.Body)
-	smsResponses := new(SMSResponses)
-	json.Unmarshal(jsonContent, smsResponses)
+	smsResponses := make(SMSResponses, 0)
+	json.Unmarshal(jsonContent, &smsResponses)
 
 	return smsResponses
 }
