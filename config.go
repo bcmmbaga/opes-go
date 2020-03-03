@@ -4,8 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"fmt"
-	"log"
 	"net/http"
 	"os"
 	"time"
@@ -54,14 +52,23 @@ func generateToken(c *http.Client) *auth {
 	auth.expire = time.Now().Add(time.Hour * 24 * 15)
 
 	// store the token in config file
-	viper.Set("AUTH.Token", auth.token)
-	viper.Set("AUTH.Expires", auth.expire)
-	err = viper.WriteConfigAs(fmt.Sprintf("%s/%s", configPath, "config.toml"))
-	if err != nil {
-		log.Fatal(err)
-	}
+	viper.Set("auth.token", auth.token)
+	viper.Set("auth.expires", auth.expire)
+	viper.WriteConfigAs(configPath)
 
 	return auth
+}
+
+// generateTokenFromFile retrieve auth from the file.
+func generateTokenFromFile() *auth {
+	viper.ReadInConfig()
+	expires := viper.Get("auth.expires").(time.Time)
+	token := viper.GetString("auth.token")
+
+	return &auth{
+		token:  token,
+		expire: expires,
+	}
 }
 
 func (s *Service) refreshToken() error {
@@ -76,7 +83,7 @@ func (s *Service) refreshToken() error {
 
 func (a *auth) isvalid() bool {
 
-	// token is valid if number of days remaining is lessor equal to one.
+	// token is valid for 14 days
 	if remainingDays := int(a.expire.Sub(time.Now()).Hours()) / 24; remainingDays <= 1 {
 		return false
 	}

@@ -23,7 +23,7 @@ func init() {
 	}
 
 	path = filepath.Join(path, ".config/opes")
-	configPath = path
+	configPath = fmt.Sprintf("%s/%s", path, "config.toml")
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		err := os.MkdirAll(path, 0700)
 		if err != nil {
@@ -31,7 +31,7 @@ func init() {
 		}
 	}
 
-	viper.SetConfigFile(path)
+	viper.AddConfigPath(path)
 	viper.SetConfigName("config")
 
 }
@@ -52,10 +52,17 @@ func NewSMSService() *Service {
 		},
 	}
 
-	return &Service{
-		Auth:   generateToken(c),
-		Client: c,
+	svc := &Service{}
+	svc.Client = c
+
+	// generate new token if config file does not exist
+	if _, err := os.Stat(configPath); os.IsNotExist(err) {
+		svc.Auth = generateToken(c)
 	}
+
+	svc.Auth = generateTokenFromFile()
+
+	return svc
 }
 
 // // Send ...
