@@ -7,7 +7,35 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
+	"path/filepath"
+
+	"github.com/mitchellh/go-homedir"
+	"github.com/spf13/viper"
 )
+
+var configPath string
+
+func init() {
+	path, err := homedir.Dir()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	path = filepath.Join(path, ".config/opes")
+	configPath = path
+
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		err := os.MkdirAll(path, 0700)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	viper.SetConfigFile(path)
+	viper.SetConfigName("config")
+
+}
 
 // Service domain implementation for opes SMS API.
 type Service struct {
