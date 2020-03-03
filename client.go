@@ -5,6 +5,7 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -90,10 +91,15 @@ func (s Service) Send(msgs ...Message) SMSResponses {
 	defer resp.Body.Close()
 
 	smsResponses := make(SMSResponses, 0)
-	if err := json.NewDecoder(resp.Body).Decode(&smsResponses); err != nil {
+
+	jsonContent, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
 		return nil
 	}
 
-	fmt.Println(smsResponses)
+	if err = json.Unmarshal(jsonContent, &smsResponses); err != nil {
+		return nil
+	}
+
 	return smsResponses
 }
