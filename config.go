@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"time"
@@ -55,7 +56,10 @@ func generateToken(c *http.Client) *auth {
 	// store the token in config file
 	viper.Set("AUTH.Token", auth.token)
 	viper.Set("AUTH.Expires", auth.expire)
-	viper.WriteConfigAs(fmt.Sprintf("%s/config.toml", configPath))
+	err = viper.WriteConfigAs(fmt.Sprintf("%s/%s", configPath, "config.toml"))
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	return auth
 }
