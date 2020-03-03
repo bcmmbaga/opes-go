@@ -5,7 +5,6 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -67,7 +66,7 @@ func NewSMSService() *Service {
 }
 
 // Send message
-func (s Service) Send(msgs ...Message) SMSResponses {
+func (s Service) Send(msgs ...Message) *SMSResponses {
 	url := "https://sms.opestechnologies.co.tz/api/messages/send"
 	if ok := s.Auth.isvalid(); !ok {
 		if err := s.refreshToken(); err != nil {
@@ -90,14 +89,8 @@ func (s Service) Send(msgs ...Message) SMSResponses {
 	}
 	defer resp.Body.Close()
 
-	smsResponses := make(SMSResponses, 0)
-
-	jsonContent, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil
-	}
-
-	if err = json.Unmarshal(jsonContent, &smsResponses); err != nil {
+	smsResponses := new(SMSResponses)
+	if err := json.NewDecoder(resp.Body).Decode(smsResponses); err != nil {
 		return nil
 	}
 
