@@ -59,6 +59,7 @@ func NewSMSService() *Service {
 	// generate new token if config file does not exist
 	if _, err := os.Stat(configPath); os.IsNotExist(err) {
 		svc.Auth = generateToken(c)
+		return svc
 	}
 
 	svc.Auth = generateTokenFromFile()
