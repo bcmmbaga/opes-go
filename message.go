@@ -17,6 +17,6 @@ type smsRequest struct {
 type SMSResponses []struct {
 	ResultCode int    `json:"result_code"`
 	Result     string `json:"result"`
-	Reference  int    `json:"reference"`
+	Reference  string `json:"reference"`
 	Message    string `json:"message"`
 }
